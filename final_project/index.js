@@ -18,21 +18,35 @@ app.use(
 );
 
 app.use("/customer/auth/*", function auth(req, res, next) {
-  if (req.session.authorization) {
-    let token = req.session.authorization["accessToken"];
-
-    jwt.verify(token, "access", (err, user) => {
-      if (!err) {
-        req.user = user;
-        next();
-      } else {
-        return res.status(403).json({ message: "User not authenticated" });
+    let token;
+  
+    // Check for token in session
+    if (req.session?.authorization?.accessToken) {
+      token = req.session.authorization.accessToken;
+    } 
+    // Check for token in Authorization header
+    else if (req.headers.authorization) {
+      const headerParts = req.headers.authorization.split(" ");
+      if (headerParts.length === 2 && headerParts[0] === "Bearer") {
+        token = headerParts[1];
       }
-    });
-  } else {
-    return res.status(403).json({ message: "User not logged in" });
-  }
-});
+    }
+  
+    if (token) {
+      jwt.verify(token, "access", (err, user) => {
+        if (!err) {
+          req.user = user;
+          next();
+        } else {
+          return res.status(403).json({ message: "User not authenticated" });
+        }
+      });
+    } else {
+      return res.status(403).json({ message: "Token missing or invalid" });
+    }
+  });
+  
+  
 
 app.use("/customer", regd_users);
 app.use("/", public_users);
