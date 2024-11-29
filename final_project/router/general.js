@@ -1,7 +1,7 @@
 import express from "express";
-import axios from "axios";  // Importing axios
-import books from "./booksdb.js"; // Default import
-import { users } from "./auth_users.js"; // Import users from auth_users.js
+import axios from "axios";
+import books from "./booksdb.js";
+import { users } from "./auth_users.js"; // switched to ESmodules syntax for preference
 
 const public_users = express.Router();
 
@@ -103,7 +103,7 @@ public_users.get("/books", async (req, res) => {
     }
   });
 
-// Route to get reviews for a specific book by ISBN
+// Route to get reviews for a book by ISBN
 public_users.get("/review/:isbn", async (req, res) => {
   const isbn = req.params.isbn;
 

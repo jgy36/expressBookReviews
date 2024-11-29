@@ -1,4 +1,3 @@
-// index.js
 import express from "express";
 import session from "express-session";
 import jwt from "jsonwebtoken";
@@ -20,11 +19,9 @@ app.use(
 app.use("/customer/auth/*", function auth(req, res, next) {
     let token;
   
-    // Check for token in session
     if (req.session?.authorization?.accessToken) {
       token = req.session.authorization.accessToken;
     } 
-    // Check for token in Authorization header
     else if (req.headers.authorization) {
       const headerParts = req.headers.authorization.split(" ");
       if (headerParts.length === 2 && headerParts[0] === "Bearer") {
